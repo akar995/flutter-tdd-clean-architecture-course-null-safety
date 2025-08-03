@@ -5,7 +5,6 @@ import 'package:clean_architecture_tdd_course/features/number_trivia/data/dataso
 import 'package:clean_architecture_tdd_course/features/number_trivia/data/models/number_trivia_model.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:matcher/matcher.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../fixtures/fixture_reader.dart';
@@ -13,8 +12,8 @@ import '../../../../fixtures/fixture_reader.dart';
 class MockHttpClient extends Mock implements http.Client {}
 
 void main() {
-  NumberTriviaRemoteDataSourceImpl dataSource;
-  MockHttpClient mockHttpClient;
+  late NumberTriviaRemoteDataSourceImpl dataSource;
+  late MockHttpClient mockHttpClient;
 
   setUp(() {
     mockHttpClient = MockHttpClient();
@@ -22,19 +21,22 @@ void main() {
   });
 
   void setUpMockHttpClientSuccess200() {
-    when(mockHttpClient.get(any, headers: anyNamed('headers')))
-        .thenAnswer((_) async => http.Response(fixture('trivia.json'), 200));
+    when(
+      mockHttpClient.get(any, headers: anyNamed('headers')),
+    ).thenAnswer((_) async => http.Response(fixture('trivia.json'), 200));
   }
 
   void setUpMockHttpClientFailure404() {
-    when(mockHttpClient.get(any, headers: anyNamed('headers')))
-        .thenAnswer((_) async => http.Response('Something went wrong', 404));
+    when(
+      mockHttpClient.get(any, headers: anyNamed('headers')),
+    ).thenAnswer((_) async => http.Response('Something went wrong', 404));
   }
 
   group('getConcreteNumberTrivia', () {
     final tNumber = 1;
-    final tNumberTriviaModel =
-        NumberTriviaModel.fromJson(json.decode(fixture('trivia.json')));
+    final tNumberTriviaModel = NumberTriviaModel.fromJson(
+      json.decode(fixture('trivia.json')),
+    );
 
     test(
       '''should perform a GET request on a URL with number
@@ -45,12 +47,12 @@ void main() {
         // act
         dataSource.getConcreteNumberTrivia(tNumber);
         // assert
-        verify(mockHttpClient.get(
-          'http://numbersapi.com/$tNumber',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ));
+        verify(
+          mockHttpClient.get(
+            'http://numbersapi.com/$tNumber',
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
       },
     );
 
@@ -80,8 +82,9 @@ void main() {
   });
 
   group('getRandomNumberTrivia', () {
-    final tNumberTriviaModel =
-        NumberTriviaModel.fromJson(json.decode(fixture('trivia.json')));
+    final tNumberTriviaModel = NumberTriviaModel.fromJson(
+      json.decode(fixture('trivia.json')),
+    );
 
     test(
       '''should perform a GET request on a URL with number
@@ -92,12 +95,12 @@ void main() {
         // act
         dataSource.getRandomNumberTrivia();
         // assert
-        verify(mockHttpClient.get(
-          'http://numbersapi.com/random',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ));
+        verify(
+          mockHttpClient.get(
+            'http://numbersapi.com/random',
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
       },
     );
 

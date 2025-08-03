@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 class TriviaDisplay extends StatelessWidget {
   final NumberTrivia numberTrivia;
 
-  const TriviaDisplay({
-    Key key,
-    @required this.numberTrivia,
-  }) : super(key: key);
+  const TriviaDisplay({super.key, required this.numberTrivia});
 
   @override
   Widget build(BuildContext context) {

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TriviaControls extends StatefulWidget {
-  const TriviaControls({
-    Key key,
-  }) : super(key: key);
+  const TriviaControls({super.key});
 
   @override
   _TriviaControlsState createState() => _TriviaControlsState();
@@ -13,7 +11,7 @@ class TriviaControls extends StatefulWidget {
 
 class _TriviaControlsState extends State<TriviaControls> {
   final controller = TextEditingController();
-  String inputStr;
+  String inputStr = '';
 
   @override
   Widget build(BuildContext context) {
@@ -37,30 +35,37 @@ class _TriviaControlsState extends State<TriviaControls> {
         Row(
           children: <Widget>[
             Expanded(
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: Text('Search'),
-                color: Theme.of(context).accentColor,
-                textTheme: ButtonTextTheme.primary,
+
+                style: ButtonStyle(
+                  foregroundColor: WidgetStateProperty.all<Color>(
+                    Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                // color: Theme.of(context).colorScheme.secondary,
+                // textTheme: ButtonTextTheme.primary,
                 onPressed: dispatchConcrete,
               ),
             ),
             SizedBox(width: 10),
             Expanded(
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: Text('Get random trivia'),
                 onPressed: dispatchRandom,
               ),
             ),
           ],
-        )
+        ),
       ],
     );
   }
 
   void dispatchConcrete() {
     controller.clear();
-    BlocProvider.of<NumberTriviaBloc>(context)
-        .add(GetTriviaForConcreteNumber(inputStr));
+    BlocProvider.of<NumberTriviaBloc>(
+      context,
+    ).add(GetTriviaForConcreteNumber(inputStr));
   }
 
   void dispatchRandom() {

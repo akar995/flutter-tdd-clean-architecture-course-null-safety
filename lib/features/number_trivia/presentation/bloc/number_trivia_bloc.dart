@@ -5,7 +5,6 @@ import 'package:clean_architecture_tdd_course/core/error/failures.dart';
 import 'package:clean_architecture_tdd_course/core/usecases/usecase.dart';
 import 'package:clean_architecture_tdd_course/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:dartz/dartz.dart';
-import 'package:meta/meta.dart';
 
 import './bloc.dart';
 import '../../../../core/util/input_converter.dart';
@@ -22,26 +21,23 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
   final GetRandomNumberTrivia getRandomNumberTrivia;
   final InputConverter inputConverter;
 
-  NumberTriviaBloc({
-    @required GetConcreteNumberTrivia concrete,
-    @required GetRandomNumberTrivia random,
-    @required this.inputConverter,
-  })  : assert(concrete != null),
-        assert(random != null),
-        assert(inputConverter != null),
-        getConcreteNumberTrivia = concrete,
-        getRandomNumberTrivia = random;
+  NumberTriviaBloc(
+    super.initialState, {
+    required GetConcreteNumberTrivia concrete,
+    required GetRandomNumberTrivia random,
+    required this.inputConverter,
+  }) : getConcreteNumberTrivia = concrete,
+       getRandomNumberTrivia = random;
 
   @override
   NumberTriviaState get initialState => Empty();
 
   @override
-  Stream<NumberTriviaState> mapEventToState(
-    NumberTriviaEvent event,
-  ) async* {
+  Stream<NumberTriviaState> mapEventToState(NumberTriviaEvent event) async* {
     if (event is GetTriviaForConcreteNumber) {
-      final inputEither =
-          inputConverter.stringToUnsignedInteger(event.numberString);
+      final inputEither = inputConverter.stringToUnsignedInteger(
+        event.numberString,
+      );
 
       yield* inputEither.fold(
         (failure) async* {
@@ -49,8 +45,9 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
         },
         (integer) async* {
           yield Loading();
-          final failureOrTrivia =
-              await getConcreteNumberTrivia(Params(number: integer));
+          final failureOrTrivia = await getConcreteNumberTrivia(
+            Params(number: integer),
+          );
           yield* _eitherLoadedOrErrorState(failureOrTrivia);
         },
       );
